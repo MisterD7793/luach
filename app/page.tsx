@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { HDate } from "@hebcal/core";
-import { ChevronLeft, ChevronRight, Plus, Bell, Settings } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Bell, Settings, Clock } from "lucide-react";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import EventForm, { type EventPayload } from "@/components/events/EventForm";
 import Footer from "@/components/Footer";
+import ZmanimSheet from "@/components/ZmanimSheet";
 import {
   formatHebrewDate,
   formatGregorianDate,
@@ -55,6 +56,7 @@ export default function HomePage() {
 
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showZmanim, setShowZmanim] = useState(false);
   const [selectedDate, setSelectedDate] = useState<{ gregorian: Date; hebrew: HDate } | null>(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState<Event[]>([]);
 
@@ -233,14 +235,23 @@ export default function HomePage() {
       </div>
 
       {/* Today strip */}
-      <div className="mx-4 mb-4 rounded-xl bg-[var(--secondary)] px-4 py-3 text-center">
-        <div className="text-xs text-[var(--muted-foreground)] mb-0.5">Today</div>
-        <div className="font-semibold text-[var(--foreground)]">
-          {formatGregorianDate(today, true)}
+      <div className="mx-4 mb-4 rounded-xl bg-[var(--secondary)] px-4 py-3 flex items-center justify-between">
+        <div className="text-center flex-1">
+          <div className="text-xs text-[var(--muted-foreground)] mb-0.5">Today</div>
+          <div className="font-semibold text-[var(--foreground)]">
+            {formatGregorianDate(today, true)}
+          </div>
+          <div className="text-sm text-[var(--muted-foreground)]">
+            {formatHebrewDate(todayHebrew, true)}
+          </div>
         </div>
-        <div className="text-sm text-[var(--muted-foreground)]">
-          {formatHebrewDate(todayHebrew, true)}
-        </div>
+        <button
+          onClick={() => setShowZmanim(true)}
+          className="p-2 rounded-full min-h-[auto] min-w-[auto]"
+          title="Zmanim"
+        >
+          <Clock size={18} className="text-[var(--muted-foreground)]" />
+        </button>
       </div>
 
       <Footer />
@@ -317,6 +328,17 @@ export default function HomePage() {
             />
           </div>
         </div>
+      )}
+
+      {/* Zmanim sheet */}
+      {showZmanim && (
+        <ZmanimSheet
+          date={today}
+          latitude={user?.latitude}
+          longitude={user?.longitude}
+          timezone={user?.timezone ?? "America/New_York"}
+          onClose={() => setShowZmanim(false)}
+        />
       )}
 
       {/* Notifications sheet */}
