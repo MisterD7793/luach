@@ -5,6 +5,17 @@ import { ChevronLeft } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "0.2.0",
+    date: "March 31, 2026",
+    changes: [
+      "First public beta — app is now live at luach.misterd.net",
+      "Custom domain configured (luach.misterd.net) via Vercel and Clerk Production instance",
+      "Switched from Clerk Development to Clerk Production for real user authentication",
+      "Google sign-in enabled via custom Google OAuth credentials",
+      "Added changelog page (this screen) and About page, both linked from Settings",
+    ],
+  },
+  {
     version: "0.1.0",
     date: "March 31, 2026",
     changes: [
