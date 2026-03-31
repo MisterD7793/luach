@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Zmanim, GeoLocation } from "@hebcal/core";
 
 type Props = {
@@ -41,6 +42,20 @@ function formatTime(date: Date | null, timezone: string): string {
 }
 
 export default function ZmanimSheet({ date, latitude, longitude, timezone, onClose }: Props) {
+  const router = useRouter();
+  const [locationName, setLocationName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (latitude == null || longitude == null) return;
+    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+      .then((r) => r.json())
+      .then((data) => {
+        const label = [data.city || data.locality, data.countryName].filter(Boolean).join(", ");
+        if (label) setLocationName(label);
+      })
+      .catch(() => {});
+  }, [latitude, longitude]);
+
   const rows = useMemo(() => {
     if (latitude == null || longitude == null) return null;
     try {
@@ -70,8 +85,21 @@ export default function ZmanimSheet({ date, latitude, longitude, timezone, onClo
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-[var(--foreground)]">Zmanim</h2>
-          <p className="text-sm text-[var(--muted-foreground)]">{dateLabel}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--foreground)]">Zmanim</h2>
+              <p className="text-sm text-[var(--muted-foreground)]">{dateLabel}</p>
+              {locationName && (
+                <p className="text-sm text-[var(--foreground)] mt-0.5">{locationName}</p>
+              )}
+            </div>
+            <button
+              onClick={() => { onClose(); router.push("/settings"); }}
+              className="text-xs text-[var(--muted-foreground)] underline shrink-0 mt-1 min-h-[auto] min-w-[auto]"
+            >
+              Change location
+            </button>
+          </div>
         </div>
 
         {rows == null ? (
