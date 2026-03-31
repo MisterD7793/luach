@@ -105,6 +105,21 @@ export default function SettingsPage() {
             <div className="text-sm font-medium mb-3 text-[var(--foreground)]">Account</div>
             <UserButton />
           </div>
+
+          <div className="pt-4 border-t border-[var(--border)] flex gap-5">
+            <button
+              onClick={() => router.push("/changelog")}
+              className="text-sm text-[var(--muted-foreground)] underline"
+            >
+              Version history
+            </button>
+            <button
+              onClick={() => router.push("/about")}
+              className="text-sm text-[var(--muted-foreground)] underline"
+            >
+              About
+            </button>
+          </div>
         </div>
       )}
     </div>
