@@ -21,10 +21,18 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  const [zip, setZip] = useState("");
+  const [locationLabel, setLocationLabel] = useState<string | null>(null);
+  const [zipError, setZipError] = useState<string | null>(null);
+  const [zipLooking, setZipLooking] = useState(false);
+
   useEffect(() => {
     fetch("/api/user").then(r => r.json()).then(u => {
       setTimezone(u.timezone ?? "America/New_York");
       setPrimaryCalendar(u.primaryCalendar ?? "GREGORIAN");
+      if (u.latitude != null && u.longitude != null) {
+        setLocationLabel(`${u.latitude.toFixed(4)}, ${u.longitude.toFixed(4)}`);
+      }
       setLoading(false);
     });
   }, []);
@@ -39,6 +47,36 @@ export default function SettingsPage() {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function lookupZip() {
+    const z = zip.trim();
+    if (!/^\d{5}$/.test(z)) {
+      setZipError("Enter a 5-digit US zip code.");
+      return;
+    }
+    setZipError(null);
+    setZipLooking(true);
+    try {
+      const res = await fetch(`https://api.zippopotam.us/us/${z}`);
+      if (!res.ok) { setZipError("Zip code not found."); return; }
+      const data = await res.json();
+      const place = data.places[0];
+      const lat = parseFloat(place.latitude);
+      const lon = parseFloat(place.longitude);
+      const label = `${place["place name"]}, ${place["state abbreviation"]}`;
+      await fetch("/api/user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lon }),
+      });
+      setLocationLabel(label);
+      setZip("");
+    } catch {
+      setZipError("Could not look up that zip code.");
+    } finally {
+      setZipLooking(false);
+    }
   }
 
   return (
@@ -70,6 +108,41 @@ export default function SettingsPage() {
                 <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1 text-[var(--foreground)]">
+              Location
+            </label>
+            <p className="text-xs text-[var(--muted-foreground)] mb-2">
+              Used for precise Zmanim calculations. Enter your zip code to set it.
+            </p>
+            {locationLabel && (
+              <p className="text-xs text-[var(--foreground)] mb-2">
+                Current location: <span className="font-medium">{locationLabel}</span>
+              </p>
+            )}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && lookupZip()}
+                placeholder="e.g. 10001"
+                maxLength={5}
+                className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              />
+              <button
+                onClick={lookupZip}
+                disabled={zipLooking}
+                className="rounded-lg bg-[var(--primary)] text-white px-4 py-2 text-sm font-medium disabled:opacity-50"
+              >
+                {zipLooking ? "…" : "Set"}
+              </button>
+            </div>
+            {zipError && (
+              <p className="text-xs text-red-500 mt-1">{zipError}</p>
+            )}
           </div>
 
           <div>
