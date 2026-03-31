@@ -22,7 +22,12 @@ const FEATURES = [
   {
     title: "Hebrew interface",
     description:
-      "When Hebrew is your primary calendar, the app switches to Hebrew language and right-to-left layout throughout.",
+      "When Hebrew is your primary calendar, the app switches to Hebrew language and right-to-left layout throughout. The calendar toggle becomes a compact EN | HE switch.",
+  },
+  {
+    title: "Daily Zmanim",
+    description:
+      "One tap to see the halachic times for any day — Alot HaShachar, Sunrise, Sof Zman Kriat Shema, Mincha, Shkiah, Tzet HaKochavim, and more. Times are calculated for your location.",
   },
   {
     title: "Event editing and deletion",
