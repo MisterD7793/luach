@@ -25,6 +25,8 @@ export default function SettingsPage() {
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
   const [zipError, setZipError] = useState<string | null>(null);
   const [zipLooking, setZipLooking] = useState(false);
+  const [geoLooking, setGeoLooking] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/user").then(r => r.json()).then(u => {
@@ -47,6 +49,42 @@ export default function SettingsPage() {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function useCurrentLocation() {
+    if (!navigator.geolocation) {
+      setGeoError("Geolocation is not supported by your browser.");
+      return;
+    }
+    setGeoLooking(true);
+    setGeoError(null);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        try {
+          const res = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+          );
+          const data = await res.json();
+          const label = [data.city || data.locality, data.countryName].filter(Boolean).join(", ");
+          await fetch("/api/user", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ latitude: lat, longitude: lon }),
+          });
+          setLocationLabel(label || `${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+        } catch {
+          setGeoError("Could not save location.");
+        } finally {
+          setGeoLooking(false);
+        }
+      },
+      () => {
+        setGeoError("Location access was denied.");
+        setGeoLooking(false);
+      }
+    );
   }
 
   async function lookupZip() {
@@ -115,13 +153,28 @@ export default function SettingsPage() {
               Location
             </label>
             <p className="text-xs text-[var(--muted-foreground)] mb-2">
-              Used for precise Zmanim calculations. Enter your zip code to set it.
+              Used for precise Zmanim calculations.
             </p>
             {locationLabel && (
-              <p className="text-xs text-[var(--foreground)] mb-2">
-                Current location: <span className="font-medium">{locationLabel}</span>
+              <p className="text-xs text-[var(--foreground)] mb-3">
+                Current: <span className="font-medium">{locationLabel}</span>
               </p>
             )}
+            <button
+              onClick={useCurrentLocation}
+              disabled={geoLooking}
+              className="w-full rounded-lg border border-[var(--primary)] text-[var(--primary)] py-2.5 text-sm font-medium disabled:opacity-50 mb-2"
+            >
+              {geoLooking ? "Detecting…" : "Use my current location"}
+            </button>
+            {geoError && (
+              <p className="text-xs text-red-500 mb-2">{geoError}</p>
+            )}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex-1 h-px bg-[var(--border)]" />
+              <span className="text-xs text-[var(--muted-foreground)]">or enter US zip code</span>
+              <div className="flex-1 h-px bg-[var(--border)]" />
+            </div>
             <div className="flex gap-2">
               <input
                 type="text"
