@@ -101,6 +101,10 @@ export default function AboutPage() {
 
         <div className="rounded-xl bg-[var(--secondary)] px-4 py-4 space-y-2">
           <div className="flex justify-between text-sm">
+            <span className="text-[var(--muted-foreground)]">Concept</span>
+            <span className="font-medium text-[var(--foreground)]">Yonatan Vinnik</span>
+          </div>
+          <div className="flex justify-between text-sm">
             <span className="text-[var(--muted-foreground)]">Product Owner</span>
             <span className="font-medium text-[var(--foreground)]">Seth Dimbert</span>
           </div>
