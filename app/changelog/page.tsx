@@ -9,6 +9,7 @@ const VERSIONS = [
     version: "0.2.0",
     date: "March 31, 2026",
     changes: [
+      "Fixed: tapping \"Add event on this day\" now pre-fills the form with the selected date on whichever calendar is active",
       "First public beta — app is now live at luach.misterd.net",
       "Custom domain configured (luach.misterd.net) via Vercel and Clerk Production instance",
       "Switched from Clerk Development to Clerk Production for real user authentication",
