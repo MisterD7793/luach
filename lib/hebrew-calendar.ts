@@ -3,7 +3,7 @@
  * All conversion, display, and recurrence logic lives here.
  */
 
-import { HDate, months } from "@hebcal/core";
+import { HDate, months, Zmanim, GeoLocation } from "@hebcal/core";
 
 // Re-export months so other files import from one place
 export { months };
@@ -42,12 +42,9 @@ export function getTodayHebrew(
   const now = new Date();
 
   if (latitude != null && longitude != null) {
-    // Use Zmanim for precise sunset calculation
-    // Dynamically imported to avoid server/client issues
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { Zmanim } = require("@hebcal/core");
-      const zmanim = new Zmanim(now, latitude, longitude, false);
+      const gloc = new GeoLocation(null, latitude, longitude, 0, timezone);
+      const zmanim = new Zmanim(gloc, now, false);
       const sunset = zmanim.sunset();
       if (sunset && now > sunset) {
         const tomorrow = new Date(now);
@@ -80,8 +77,15 @@ export function getTodayHebrew(
 
 /**
  * Convert a Gregorian date to HDate.
+ * Pass afterSunset=true if the event occurred after sunset — the Hebrew date
+ * has already advanced to the next day by that point.
  */
-export function gregorianToHebrew(date: Date): HDate {
+export function gregorianToHebrew(date: Date, afterSunset = false): HDate {
+  if (afterSunset) {
+    const next = new Date(date);
+    next.setDate(next.getDate() + 1);
+    return new HDate(next);
+  }
   return new HDate(date);
 }
 

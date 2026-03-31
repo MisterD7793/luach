@@ -140,8 +140,8 @@ export default function HomePage() {
       body: JSON.stringify(payload),
     });
     if (res.ok) {
-      const newEvent = await res.json();
-      setEvents((prev) => [newEvent, ...prev]);
+      const { primary, paired } = await res.json();
+      setEvents((prev) => [primary, ...(paired ? [paired] : []), ...prev]);
       setShowAddEvent(false);
       fetch("/api/notifications", { method: "POST" }).then(() => loadData());
     }
