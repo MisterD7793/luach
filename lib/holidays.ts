@@ -70,7 +70,7 @@ export function getHolidaysForMonth(
     if (settings.il && f & flags.CHUL_ONLY) continue;
 
     // Determine which category this event belongs to
-    const isMajor = !!(f & flags.CHAG) || !!(f & flags.MAJOR_FAST);
+    const isMajor = !!(f & flags.CHAG) || !!(f & flags.MAJOR_FAST) || !!(f & flags.CHOL_HAMOED);
     const isMinor = !!(f & flags.MINOR_HOLIDAY);
     const isRoshChodesh = !!(f & flags.ROSH_CHODESH);
     const isMinorFast = !!(f & flags.MINOR_FAST);
