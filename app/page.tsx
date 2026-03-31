@@ -214,8 +214,19 @@ export default function HomePage() {
         <button onClick={prevMonth} className="p-2 rounded-full min-h-[auto] min-w-[auto]">
           <ChevronLeft size={20} className="text-[var(--foreground)]" />
         </button>
-        <div className="font-semibold text-[var(--foreground)]">
-          {GREGORIAN_MONTH_NAMES[viewMonth - 1]} {viewYear}
+        <div className="text-center">
+          <div className="font-semibold text-[var(--foreground)]">
+            {primaryCalendar === "GREGORIAN"
+              ? `${GREGORIAN_MONTH_NAMES[viewMonth - 1]} ${viewYear}`
+              : (() => { const h = new HDate(new Date(viewYear, viewMonth - 1, 15)); return `${formatHebrewDate(h)} ${h.getFullYear()}`; })()
+            }
+          </div>
+          <div className="text-xs text-[var(--muted-foreground)]">
+            {primaryCalendar === "GREGORIAN"
+              ? (() => { const h = new HDate(new Date(viewYear, viewMonth - 1, 15)); return `${formatHebrewDate(h)} ${h.getFullYear()}`; })()
+              : `${GREGORIAN_MONTH_NAMES[viewMonth - 1]} ${viewYear}`
+            }
+          </div>
         </div>
         <button onClick={nextMonth} className="p-2 rounded-full min-h-[auto] min-w-[auto]">
           <ChevronRight size={20} className="text-[var(--foreground)]" />

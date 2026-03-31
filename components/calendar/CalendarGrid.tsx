@@ -79,29 +79,6 @@ export default function CalendarGrid({
 
   return (
     <div className="w-full">
-      {/* Month header */}
-      <div className="text-center mb-3">
-        {primaryCalendar === "GREGORIAN" ? (
-          <>
-            <div className="text-lg font-bold text-[var(--foreground)]">
-              {GREGORIAN_MONTH_NAMES[month - 1]} {year}
-            </div>
-            <div className="text-sm text-[var(--muted-foreground)]">
-              {hebrewMonthInfo.monthName} {hebrewMonthInfo.hebrewYear}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="text-lg font-bold text-[var(--foreground)]">
-              {hebrewMonthInfo.monthName} {hebrewMonthInfo.hebrewYear}
-            </div>
-            <div className="text-sm text-[var(--muted-foreground)]">
-              {GREGORIAN_MONTH_NAMES[month - 1]} {year}
-            </div>
-          </>
-        )}
-      </div>
-
       {/* Day name headers */}
       <div className="grid grid-cols-7 mb-1">
         {DAY_NAMES.map((d) => (
