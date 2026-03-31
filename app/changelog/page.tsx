@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.3.1",
+    name: "Bug Fixes",
+    date: "March 31, 2026",
+    changes: [
+      "Fixed duplicate month header — month and year now appear once in the navigation bar, with the secondary calendar shown below it",
+    ],
+  },
+  {
     version: "0.3.0",
     name: "Halachic Times",
     date: "March 31, 2026",
