@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String   @id @default(cuid())
+  clerkId          String   @unique
+  email            String?  @unique
+  phone            String?  @unique
+  timezone         String   @default("America/New_York")
+  latitude         Float?
+  longitude        Float?
+  primaryCalendar  Calendar @default(GREGORIAN)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  events        Event[]
+  notifications Notification[]
+}
+
+model Event {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  type              EventType
+  notes             String?
+  canonicalCalendar Calendar
+
+  // Hebrew date fields (used when canonicalCalendar = HEBREW)
+  hebrewDay         Int?
+  hebrewMonth       Int?  // 1-13, uses @hebcal/core HMonth enum values
+
+  // Gregorian date fields (used when canonicalCalendar = GREGORIAN)
+  gregorianMonth    Int?  // 1-12
+  gregorianDay      Int?
+
+  // Reminder: how many days before the event to notify
+  reminderDaysBefore Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notifications Notification[]
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  message   String
+  read      Boolean  @default(false)
+  eventDate DateTime // The Gregorian date of the upcoming event occurrence
+  createdAt DateTime @default(now())
+}
+
+enum EventType {
+  BIRTHDAY
+  ANNIVERSARY
+  YAHRZEIT
+  CUSTOM
+}
+
+enum Calendar {
+  HEBREW
+  GREGORIAN
+}
