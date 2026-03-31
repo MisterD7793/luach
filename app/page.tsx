@@ -6,6 +6,7 @@ import { HDate } from "@hebcal/core";
 import { ChevronLeft, ChevronRight, Plus, Bell, Settings } from "lucide-react";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import EventForm, { type EventPayload } from "@/components/events/EventForm";
+import Footer from "@/components/Footer";
 import {
   formatHebrewDate,
   formatGregorianDate,
@@ -240,6 +241,8 @@ export default function HomePage() {
           {formatHebrewDate(todayHebrew, true)}
         </div>
       </div>
+
+      <Footer />
 
       {/* FAB */}
       <button

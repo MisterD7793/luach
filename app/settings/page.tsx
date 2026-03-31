@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { ChevronLeft } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const COMMON_TIMEZONES = [
   "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles",
@@ -106,22 +107,9 @@ export default function SettingsPage() {
             <UserButton />
           </div>
 
-          <div className="pt-4 border-t border-[var(--border)] flex gap-5">
-            <button
-              onClick={() => router.push("/changelog")}
-              className="text-sm text-[var(--muted-foreground)] underline"
-            >
-              Version history
-            </button>
-            <button
-              onClick={() => router.push("/about")}
-              className="text-sm text-[var(--muted-foreground)] underline"
-            >
-              About
-            </button>
-          </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

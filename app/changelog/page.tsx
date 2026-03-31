@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
@@ -91,6 +92,7 @@ export default function ChangelogPage() {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }

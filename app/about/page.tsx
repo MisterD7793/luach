@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const STACK = [
   {
@@ -127,6 +128,7 @@ export default function AboutPage() {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
