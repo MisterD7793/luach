@@ -17,6 +17,7 @@ model User {
   latitude         Float?
   longitude        Float?
   primaryCalendar  Calendar @default(GREGORIAN)
+  holidaySettings  Json?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

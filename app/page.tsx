@@ -14,6 +14,11 @@ import {
   getTodayHebrew,
   GREGORIAN_MONTH_NAMES,
 } from "@/lib/hebrew-calendar";
+import {
+  getHolidaysForMonth,
+  DEFAULT_HOLIDAY_SETTINGS,
+  type HolidaySettings,
+} from "@/lib/holidays";
 
 type UserProfile = {
   id: string;
@@ -21,6 +26,7 @@ type UserProfile = {
   primaryCalendar: "HEBREW" | "GREGORIAN";
   latitude?: number | null;
   longitude?: number | null;
+  holidaySettings?: HolidaySettings | null;
 };
 
 type Event = {
@@ -57,6 +63,12 @@ export default function HomePage() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showZmanim, setShowZmanim] = useState(false);
+
+  const holidaySettings = user?.holidaySettings
+    ? { ...DEFAULT_HOLIDAY_SETTINGS, ...user.holidaySettings }
+    : DEFAULT_HOLIDAY_SETTINGS;
+
+  const holidays = getHolidaysForMonth(viewYear, viewMonth, holidaySettings);
   const [selectedDate, setSelectedDate] = useState<{ gregorian: Date; hebrew: HDate } | null>(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState<Event[]>([]);
 
@@ -240,6 +252,7 @@ export default function HomePage() {
           month={viewMonth}
           primaryCalendar={primaryCalendar}
           events={events}
+          holidays={holidays}
           todayGregorian={today}
           onDayClick={handleDayClick}
         />

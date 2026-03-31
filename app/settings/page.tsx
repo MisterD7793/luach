@@ -229,6 +229,15 @@ export default function SettingsPage() {
           </button>
 
           <div className="pt-4 border-t border-[var(--border)]">
+            <button
+              onClick={() => router.push("/holidays")}
+              className="w-full text-left rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-medium text-[var(--foreground)]"
+            >
+              Jewish holidays →
+            </button>
+          </div>
+
+          <div className="pt-4 border-t border-[var(--border)]">
             <div className="text-sm font-medium mb-3 text-[var(--foreground)]">Account</div>
             <UserButton />
           </div>

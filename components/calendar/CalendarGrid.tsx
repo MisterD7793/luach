@@ -26,6 +26,7 @@ type Props = {
   month: number; // 1-12 Gregorian
   primaryCalendar: "HEBREW" | "GREGORIAN";
   events: Event[];
+  holidays: Map<string, string>;
   todayGregorian: Date;
   onDayClick: (date: Date, hebrewDate: HDate) => void;
 };
@@ -66,6 +67,7 @@ export default function CalendarGrid({
   month,
   primaryCalendar,
   events,
+  holidays,
   todayGregorian,
   onDayClick,
 }: Props) {
@@ -104,6 +106,9 @@ export default function CalendarGrid({
               const isToday = gregorianDate.toDateString() === todayStr;
               const dayEvents = getEventsForDate(gregorianDate, hebrewDate, events);
 
+              const dateKey = gregorianDate.toISOString().slice(0, 10);
+              const isHoliday = holidays.has(dateKey);
+
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
                   ? gregorianDate.getDate().toString()
@@ -126,21 +131,19 @@ export default function CalendarGrid({
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
                   className={cn(
                     "flex flex-col items-center justify-start pt-1 pb-1 px-0.5 rounded-lg min-h-[56px] transition-colors",
-                    isToday
-                      ? "bg-[var(--primary)] text-white"
-                      : "bg-[var(--card)] hover:bg-[var(--secondary)] text-[var(--foreground)]"
+                    isHoliday
+                      ? "bg-amber-100 dark:bg-amber-900/30"
+                      : "bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
                   {/* Primary date number */}
-                  <span className={cn("text-sm font-semibold leading-tight", isToday && "text-white")}>
+                  <span className="text-sm font-semibold leading-tight text-[var(--foreground)]">
                     {primaryLabel}
                   </span>
 
                   {/* Secondary date number */}
-                  <span className={cn(
-                    "text-[10px] leading-tight",
-                    isToday ? "text-blue-100" : "text-[var(--muted-foreground)]"
-                  )}>
+                  <span className="text-[10px] leading-tight text-[var(--muted-foreground)]">
                     {secondaryLabel}
                     {hebrewMonthName && primaryCalendar === "GREGORIAN" && (
                       <span className="block text-[9px] leading-none">{hebrewMonthName}</span>
@@ -155,7 +158,7 @@ export default function CalendarGrid({
                           key={ev.id}
                           className={cn(
                             "w-1.5 h-1.5 rounded-full",
-                            isToday ? "bg-white" : EVENT_TYPE_COLORS[ev.type] ?? "bg-gray-400"
+                            EVENT_TYPE_COLORS[ev.type] ?? "bg-gray-400"
                           )}
                         />
                       ))}
