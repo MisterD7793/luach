@@ -144,6 +144,7 @@ export default function HomePage() {
       const { primary, paired } = await res.json();
       setEvents((prev) => [primary, ...(paired ? [paired] : []), ...prev]);
       setShowAddEvent(false);
+      setSelectedDate(null);
       fetch("/api/notifications", { method: "POST" }).then(() => loadData());
     }
   }
@@ -287,7 +288,7 @@ export default function HomePage() {
             )}
 
             <button
-              onClick={() => { setSelectedDate(null); setShowAddEvent(true); }}
+              onClick={() => setShowAddEvent(true)}
               className="mt-4 w-full rounded-lg bg-[var(--primary)] text-white py-3 text-sm font-medium"
             >
               Add event on this day
@@ -300,7 +301,7 @@ export default function HomePage() {
       {showAddEvent && (
         <div
           className="fixed inset-0 z-50 flex items-end bg-black/40"
-          onClick={() => setShowAddEvent(false)}
+          onClick={() => { setShowAddEvent(false); setSelectedDate(null); }}
         >
           <div
             className="w-full max-w-lg mx-auto bg-[var(--card)] rounded-t-2xl p-5 pb-8 max-h-[90vh] overflow-y-auto"
@@ -312,7 +313,7 @@ export default function HomePage() {
               initialHebrewDate={selectedDate?.hebrew}
               primaryCalendar={primaryCalendar}
               onSave={handleSaveEvent}
-              onCancel={() => setShowAddEvent(false)}
+              onCancel={() => { setShowAddEvent(false); setSelectedDate(null); }}
             />
           </div>
         </div>
