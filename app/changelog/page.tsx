@@ -6,19 +6,34 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
-    version: "0.2.0",
+    version: "0.3.0",
+    name: "Halachic Times",
     date: "March 31, 2026",
     changes: [
-      "Fixed: tapping \"Add event on this day\" now pre-fills the form with the selected date on whichever calendar is active",
+      "Daily Zmanim — tap the clock icon on the Today strip to see halachic times for the day",
+      "Location picker in Settings — use your device's location (works worldwide) or enter a US zip code",
+      "Zmanim card shows your city and a quick link to change location for travellers",
+      "Footer with About, Coming Soon, and Version History links on every page",
+      "Coming Soon page listing planned features",
+      "Add event from day view now pre-fills the form with that day's date",
+    ],
+  },
+  {
+    version: "0.2.0",
+    name: "Public Beta",
+    date: "March 31, 2026",
+    changes: [
       "First public beta — app is now live at luach.misterd.net",
       "Custom domain configured (luach.misterd.net) via Vercel and Clerk Production instance",
       "Switched from Clerk Development to Clerk Production for real user authentication",
       "Google sign-in enabled via custom Google OAuth credentials",
-      "Added changelog page (this screen) and About page, both linked from Settings",
+      "Added changelog and About pages, both linked from Settings",
+      "Fixed: tapping \"Add event on this day\" now pre-fills the form with the selected date on whichever calendar is active",
     ],
   },
   {
     version: "0.1.0",
+    name: "Event Entry",
     date: "March 31, 2026",
     changes: [
       "Birthdays and anniversaries now create two events automatically — one on the Hebrew date, one on the English date, both with reminders",
@@ -31,6 +46,7 @@ const VERSIONS = [
   },
   {
     version: "0.0.9",
+    name: "First Deployment",
     date: "March 31, 2026",
     changes: [
       "Connected live PostgreSQL database (Supabase)",
@@ -41,6 +57,7 @@ const VERSIONS = [
   },
   {
     version: "0.0.1",
+    name: "Scaffold",
     date: "March 30, 2026",
     changes: [
       "Initial project scaffold",
@@ -76,13 +93,16 @@ export default function ChangelogPage() {
       <div className="p-5 space-y-8">
         {VERSIONS.map((v) => (
           <div key={v.version}>
-            <div className="flex items-baseline gap-3 mb-3">
+            <div className="flex items-baseline gap-3 mb-1">
               <span className="text-base font-bold text-[var(--foreground)]">
                 v{v.version}
               </span>
+              <span className="text-base font-semibold text-[var(--primary)]">
+                {v.name}
+              </span>
               <span className="text-sm text-[var(--muted-foreground)]">{v.date}</span>
             </div>
-            <ul className="space-y-2">
+            <ul className="space-y-2 mt-3">
               {v.changes.map((change, i) => (
                 <li key={i} className="flex gap-2 text-sm text-[var(--foreground)]">
                   <span className="text-[var(--muted-foreground)] mt-0.5 shrink-0">–</span>
