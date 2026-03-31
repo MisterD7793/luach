@@ -5,6 +5,11 @@ import { ChevronLeft } from "lucide-react";
 
 const FEATURES = [
   {
+    title: "Tablet and desktop layout",
+    description:
+      "A fully responsive design that makes the most of larger screens — iPad, desktop, and beyond. The calendar will expand to fill the available space rather than appearing as a narrow column.",
+  },
+  {
     title: "Year navigation",
     description:
       "Tap the year in the month header to jump directly to any year — no more arrow-tapping through months to reach a date in the distant past.",
