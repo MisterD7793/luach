@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Luach
 
-## Getting Started
+A mobile-first Hebrew calendar web app for tracking meaningful annual events — birthdays, anniversaries, yahrzeits, and custom occasions — via the Jewish calendar.
 
-First, run the development server:
+## What it does
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The Jewish calendar is lunisolar: months follow the moon, years follow the sun, and a day begins at sunset. This means a yahrzeit or birthday on the Hebrew calendar falls on a different Gregorian date every year. Luach handles this correctly.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Core features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Dual calendar display** — Every date shows both the Gregorian and Hebrew date. Toggle which is "primary" at any time; the layout stays Sunday–Saturday regardless.
+- **Event tracking with canonical calendars** — Each event is stored as either a Hebrew-date event or a Gregorian-date event. A yahrzeit entered as *25 Kislev* will always appear on 25 Kislev, recalculated to the correct English date each year. An anniversary entered as *June 14* will always appear on June 14, with its Hebrew date shown alongside.
+- **Event types** — Birthday, Anniversary, Yahrzeit, Custom.
+- **Leap year handling** — Adar I / Adar II edge cases are handled per halachic convention.
+- **Sunset-aware Hebrew date** — The Hebrew date changes at sunset, not midnight. Luach uses the user's timezone (and optionally lat/lon) to display the correct Hebrew date at any given moment.
+- **In-app reminders** — Notifications are generated for upcoming events, with configurable lead time (same day through one month before).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Planned
 
-## Learn More
+- Push notifications and email reminders
+- Hebrew calendar primary view (months displayed in Hebrew order)
+- Event editing and deletion from the calendar
+- Sharing events with family members
 
-To learn more about Next.js, take a look at the following resources:
+## Tech stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Hebrew calendar | `@hebcal/core` |
+| Auth | Clerk (email + SMS/phone) |
+| Database | PostgreSQL via Prisma 7 |
+| Hosting | Vercel + Supabase |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Getting started
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js 18+
+- A [Supabase](https://supabase.com) project (free tier works)
+- A [Clerk](https://clerk.com) application with email and phone/SMS enabled
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Setup
+
+1. Clone the repo and install dependencies:
+   ```bash
+   git clone https://github.com/MisterD7793/luach.git
+   cd luach
+   npm install
+   ```
+
+2. Copy `.env` and fill in your keys:
+   ```
+   DATABASE_URL=postgresql://...        # from Supabase
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+   CLERK_SECRET_KEY=sk_...
+   ```
+
+3. Run the database migration:
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+4. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) on your phone or in a mobile-sized browser window.
