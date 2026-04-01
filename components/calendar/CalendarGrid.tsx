@@ -122,6 +122,7 @@ export default function CalendarGrid({
               const tomorrowKey = tomorrowDate.toISOString().slice(0, 10);
               const isErevYomTov = !isSaturday && !!holidays.get(tomorrowKey)?.visual;
               const showCandle = isFriday || isErevYomTov;
+              if (showCandle) console.log("showCandle true for", gregorianDate.toDateString());
 
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
