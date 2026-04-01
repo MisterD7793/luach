@@ -157,7 +157,7 @@ export default function CalendarGrid({
                   {showCandle && (
                     <Flame
                       size={10}
-                      className="absolute top-0.5 right-0.5 text-amber-500 z-10"
+                      style={{ position: "absolute", top: 2, right: 2, zIndex: 10, color: "rgb(245 158 11)" }}
                       aria-hidden
                     />
                   )}
