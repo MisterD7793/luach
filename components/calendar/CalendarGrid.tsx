@@ -100,7 +100,7 @@ export default function CalendarGrid({
           <div key={wi} className="grid grid-cols-7 gap-px">
             {week.map((day, di) => {
               if (!day) {
-                return <div key={di} className="aspect-square" />;
+                return <div key={di} style={{ minHeight: 72 }} />;
               }
 
               const { gregorianDate, hebrewDate } = day;
@@ -131,8 +131,9 @@ export default function CalendarGrid({
                 <button
                   key={di}
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
+                  style={{ minHeight: 72 }}
                   className={cn(
-                    "flex flex-col items-center rounded-lg min-h-[66px] transition-colors pt-1.5 pb-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    "flex flex-col items-center rounded-lg transition-colors pt-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
                     isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
@@ -158,20 +159,22 @@ export default function CalendarGrid({
                     </span>
                   </div>
 
-                  {/* Event dots */}
-                  {dayEvents.length > 0 && (
-                    <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
-                      {dayEvents.slice(0, 3).map((ev) => (
-                        <span
-                          key={ev.id}
-                          className={cn(
-                            "w-1.5 h-1.5 rounded-full",
-                            EVENT_TYPE_COLORS[ev.type] ?? "bg-gray-400"
-                          )}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  {/* Spacer + event dots pinned to bottom */}
+                  <div className="flex-1 flex items-end justify-center pb-2">
+                    {dayEvents.length > 0 && (
+                      <div className="flex gap-0.5 flex-wrap justify-center">
+                        {dayEvents.slice(0, 3).map((ev) => (
+                          <span
+                            key={ev.id}
+                            className={cn(
+                              "w-1.5 h-1.5 rounded-full",
+                              EVENT_TYPE_COLORS[ev.type] ?? "bg-gray-400"
+                            )}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </button>
               );
             })}
