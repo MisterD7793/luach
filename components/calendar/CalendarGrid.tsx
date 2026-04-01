@@ -132,7 +132,7 @@ export default function CalendarGrid({
                   key={di}
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
                   className={cn(
-                    "flex flex-col items-center rounded-lg min-h-[56px] transition-colors pt-1.5 pb-1 bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    "flex flex-col items-center rounded-lg min-h-[66px] transition-colors pt-1.5 pb-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
                     isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
