@@ -37,6 +37,8 @@ export type HolidayEntry = {
   name: string;
   /** Whether to show the amber band on the calendar cell */
   visual: boolean;
+  /** Whether to show a 2px contrasting line at the bottom of the band (Omer) */
+  line: boolean;
 };
 
 /**
@@ -95,12 +97,17 @@ export function getHolidaysForMonth(
 
     // Omer, Parsha, and Yom Kippur Katan are informational only — no cell coloring
     const visual = !isOmer && !isParsha && !isYomKippurKatan;
+    const line = isOmer;
 
     const greg = ev.getDate().greg();
     const key = greg.toISOString().slice(0, 10);
-    // Only store the first (most significant) holiday per day
-    if (!result.has(key)) {
-      result.set(key, { name: ev.render("en"), visual });
+    // Only store the first (most significant) holiday per day;
+    // but if the existing entry has no line and this one does, merge the line flag
+    const existing = result.get(key);
+    if (!existing) {
+      result.set(key, { name: ev.render("en"), visual, line });
+    } else if (line && !existing.line) {
+      result.set(key, { ...existing, line: true });
     }
   }
 

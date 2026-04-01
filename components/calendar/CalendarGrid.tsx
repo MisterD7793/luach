@@ -110,6 +110,7 @@ export default function CalendarGrid({
               const dateKey = gregorianDate.toISOString().slice(0, 10);
               const holidayEntry = holidays.get(dateKey);
               const isHoliday = !!holidayEntry?.visual;
+              const isOmerLine = !!holidayEntry?.line;
 
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
@@ -139,9 +140,12 @@ export default function CalendarGrid({
                 >
                   {/* Date band — amber on holidays, plain otherwise */}
                   <div className={cn(
-                    "w-full flex flex-col items-center py-0.5",
+                    "w-full flex flex-col items-center py-0.5 relative",
                     isHoliday && "bg-amber-200 dark:bg-amber-800/70"
                   )}>
+                    {isOmerLine && (
+                      <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, backgroundColor: "rgb(217 119 6)" /* amber-600 */ }} />
+                    )}
                     <span className={cn(
                       "text-sm font-semibold leading-tight",
                       isHoliday ? "text-amber-950 dark:text-amber-50" : "text-[var(--foreground)]"
