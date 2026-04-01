@@ -17,7 +17,7 @@ type ToggleRowProps = {
 function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
   return (
     <div className="flex items-center justify-between gap-4 py-3 border-b border-[var(--border)] last:border-0">
-      <div>
+      <div className="flex-1">
         <div className="text-sm font-medium text-[var(--foreground)]">{label}</div>
         {description && (
           <div className="text-xs text-[var(--muted-foreground)] mt-0.5">{description}</div>
@@ -27,14 +27,14 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
         type="button"
         onClick={() => onChange(!checked)}
         className={cn(
-          "relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors",
+          "flex-shrink-0 flex items-center h-6 w-11 rounded-full px-0.5 transition-colors duration-200",
           checked ? "bg-[var(--primary)]" : "bg-gray-300"
         )}
       >
         <span
           className={cn(
-            "pointer-events-none absolute top-0.5 inline-block h-5 w-5 rounded-full bg-white shadow transition-transform",
-            checked ? "translate-x-5" : "translate-x-0.5"
+            "h-5 w-5 rounded-full bg-white shadow transition-transform duration-200",
+            checked ? "translate-x-5" : "translate-x-0"
           )}
         />
       </button>
@@ -47,6 +47,7 @@ export default function HolidaysPage() {
   const [settings, setSettings] = useState<HolidaySettings>(DEFAULT_HOLIDAY_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch("/api/user").then(r => r.json()).then(u => {
@@ -57,16 +58,20 @@ export default function HolidaysPage() {
     });
   }, []);
 
-  async function update(patch: Partial<HolidaySettings>) {
-    const next = { ...settings, ...patch };
-    setSettings(next);
+  function toggle(patch: Partial<HolidaySettings>) {
+    setSettings(prev => ({ ...prev, ...patch }));
+  }
+
+  async function save() {
     setSaving(true);
     await fetch("/api/user", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ holidaySettings: next }),
+      body: JSON.stringify({ holidaySettings: settings }),
     });
     setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   }
 
   return (
@@ -75,10 +80,7 @@ export default function HolidaysPage() {
         <button onClick={() => router.back()} className="p-1 min-h-[auto] min-w-[auto]">
           <ChevronLeft size={20} className="text-[var(--foreground)]" />
         </button>
-        <div className="flex-1">
-          <h1 className="text-lg font-bold text-[var(--foreground)]">Jewish holidays</h1>
-        </div>
-        {saving && <span className="text-xs text-[var(--muted-foreground)]">Saving…</span>}
+        <h1 className="text-lg font-bold text-[var(--foreground)] flex-1">Jewish holidays</h1>
       </header>
 
       {loading ? (
@@ -88,7 +90,7 @@ export default function HolidaysPage() {
           <ToggleRow
             label="Show holidays on calendar"
             checked={settings.enabled}
-            onChange={(val) => update({ enabled: val })}
+            onChange={(val) => toggle({ enabled: val })}
           />
 
           {settings.enabled && (
@@ -99,7 +101,7 @@ export default function HolidaysPage() {
                   {(["Diaspora", "Israel"] as const).map((s) => (
                     <button
                       key={s}
-                      onClick={() => update({ il: s === "Israel" })}
+                      onClick={() => toggle({ il: s === "Israel" })}
                       className={cn(
                         "rounded-lg border py-2 text-sm font-medium transition-colors",
                         (s === "Israel") === settings.il
@@ -116,19 +118,27 @@ export default function HolidaysPage() {
               <div>
                 <div className="text-xs font-semibold uppercase tracking-widest text-[var(--muted-foreground)] mb-1">Categories</div>
                 <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4">
-                  <ToggleRow label="Major holidays" description="Rosh Hashana, Yom Kippur, Pesach, Shavuot, Sukkot…" checked={settings.major} onChange={(val) => update({ major: val })} />
-                  <ToggleRow label="Minor holidays" description="Chanukah, Purim, Tu B'Shvat, Lag B'Omer…" checked={settings.minor} onChange={(val) => update({ minor: val })} />
-                  <ToggleRow label="Rosh Chodesh" description="New month" checked={settings.roshChodesh} onChange={(val) => update({ roshChodesh: val })} />
-                  <ToggleRow label="Minor fasts" description="17 Tammuz, Fast of Gedaliah…" checked={settings.minorFasts} onChange={(val) => update({ minorFasts: val })} />
-                  <ToggleRow label="Special Shabbatot" description="Shabbat Shekalim, Zachor, Parah, HaChodesh…" checked={settings.specialShabbatot} onChange={(val) => update({ specialShabbatot: val })} />
-                  <ToggleRow label="Modern holidays" description="Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut…" checked={settings.modern} onChange={(val) => update({ modern: val })} />
-                  <ToggleRow label="Days of the Omer" checked={settings.omer} onChange={(val) => update({ omer: val })} />
-                  <ToggleRow label="Yom Kippur Katan" checked={settings.yomKippurKatan} onChange={(val) => update({ yomKippurKatan: val })} />
-                  <ToggleRow label="Weekly Torah portion" checked={settings.parsha} onChange={(val) => update({ parsha: val })} />
+                  <ToggleRow label="Major holidays" description="Rosh Hashana, Yom Kippur, Pesach, Shavuot, Sukkot…" checked={settings.major} onChange={(val) => toggle({ major: val })} />
+                  <ToggleRow label="Minor holidays" description="Chanukah, Purim, Tu B'Shvat, Lag B'Omer…" checked={settings.minor} onChange={(val) => toggle({ minor: val })} />
+                  <ToggleRow label="Rosh Chodesh" description="New month" checked={settings.roshChodesh} onChange={(val) => toggle({ roshChodesh: val })} />
+                  <ToggleRow label="Minor fasts" description="17 Tammuz, Fast of Gedaliah…" checked={settings.minorFasts} onChange={(val) => toggle({ minorFasts: val })} />
+                  <ToggleRow label="Special Shabbatot" description="Shabbat Shekalim, Zachor, Parah, HaChodesh…" checked={settings.specialShabbatot} onChange={(val) => toggle({ specialShabbatot: val })} />
+                  <ToggleRow label="Modern holidays" description="Yom HaShoah, Yom HaZikaron, Yom HaAtzmaut…" checked={settings.modern} onChange={(val) => toggle({ modern: val })} />
+                  <ToggleRow label="Days of the Omer" checked={settings.omer} onChange={(val) => toggle({ omer: val })} />
+                  <ToggleRow label="Yom Kippur Katan" checked={settings.yomKippurKatan} onChange={(val) => toggle({ yomKippurKatan: val })} />
+                  <ToggleRow label="Weekly Torah portion" checked={settings.parsha} onChange={(val) => toggle({ parsha: val })} />
                 </div>
               </div>
             </>
           )}
+
+          <button
+            onClick={save}
+            disabled={saving}
+            className="w-full rounded-lg bg-[var(--primary)] text-white py-3 font-medium disabled:opacity-50"
+          >
+            {saved ? "Saved!" : saving ? "Saving…" : "Save"}
+          </button>
         </div>
       )}
       <Footer />
