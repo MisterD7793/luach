@@ -10,11 +10,12 @@ const VERSIONS = [
     name: "Jewish Holidays",
     date: "March 31, 2026",
     changes: [
-      "Jewish holidays displayed on the calendar — amber band behind the date numbers on holiday days, creating a ribbon across multi-day holidays",
-      "Holiday settings page with category toggles: Major Holidays, Minor Holidays, Rosh Chodesh, Minor Fasts, Special Shabbatot, Modern Holidays, Days of the Omer, Yom Kippur Katan, Weekly Torah Portion",
+      "Jewish holidays displayed on the calendar — an amber band behind the date numbers marks holiday days, creating a visual ribbon across multi-day holidays like Pesach and Sukkot",
+      "Sefirat HaOmer displayed as a thin contrasting line at the bottom of the band, running continuously from Pesach through Shavuot — visible on both plain and holiday cells",
+      "Parsha and Yom Kippur Katan are informational only — appear in the day detail sheet when enabled, but do not mark the calendar",
+      "Holiday settings page with category toggles: Major Holidays, Minor Holidays, Rosh Chodesh, Minor Fasts, Special Shabbatot, Modern Holidays, Sefirat HaOmer, Yom Kippur Katan, Weekly Torah Portion",
       "Diaspora and Israel schedule support",
       "Tapping a holiday day shows the holiday name in the day detail sheet",
-      "Omer, Parsha, and Yom Kippur Katan are informational — visible in day detail when enabled, but don't color the calendar",
     ],
   },
   {
