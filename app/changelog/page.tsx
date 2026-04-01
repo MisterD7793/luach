@@ -6,6 +6,18 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.4.0",
+    name: "Jewish Holidays",
+    date: "March 31, 2026",
+    changes: [
+      "Jewish holidays displayed on the calendar — amber band behind the date numbers on holiday days, creating a ribbon across multi-day holidays",
+      "Holiday settings page with category toggles: Major Holidays, Minor Holidays, Rosh Chodesh, Minor Fasts, Special Shabbatot, Modern Holidays, Days of the Omer, Yom Kippur Katan, Weekly Torah Portion",
+      "Diaspora and Israel schedule support",
+      "Tapping a holiday day shows the holiday name in the day detail sheet",
+      "Omer, Parsha, and Yom Kippur Katan are informational — visible in day detail when enabled, but don't color the calendar",
+    ],
+  },
+  {
     version: "0.3.1",
     name: "Bug Fixes",
     date: "March 31, 2026",

@@ -34,9 +34,9 @@ export const DEFAULT_HOLIDAY_SETTINGS: HolidaySettings = {
 };
 
 export type HolidayEntry = {
-  /** Date string in format "YYYY-MM-DD" for fast lookup */
-  dateKey: string;
   name: string;
+  /** Whether to show the amber band on the calendar cell */
+  visual: boolean;
 };
 
 /**
@@ -47,8 +47,8 @@ export function getHolidaysForMonth(
   year: number,
   month: number, // 1-12
   settings: HolidaySettings
-): Map<string, string> {
-  const result = new Map<string, string>();
+): Map<string, HolidayEntry> {
+  const result = new Map<string, HolidayEntry>();
   if (!settings.enabled) return result;
 
   const events = HebrewCalendar.calendar({
@@ -93,11 +93,14 @@ export function getHolidaysForMonth(
 
     if (!include) continue;
 
+    // Omer, Parsha, and Yom Kippur Katan are informational only — no cell coloring
+    const visual = !isOmer && !isParsha && !isYomKippurKatan;
+
     const greg = ev.getDate().greg();
     const key = greg.toISOString().slice(0, 10);
     // Only store the first (most significant) holiday per day
     if (!result.has(key)) {
-      result.set(key, ev.render("en"));
+      result.set(key, { name: ev.render("en"), visual });
     }
   }
 

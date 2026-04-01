@@ -8,6 +8,7 @@ import {
   GREGORIAN_MONTH_NAMES,
   getHebrewMonthForGregorianMonth,
 } from "@/lib/hebrew-calendar";
+import { type HolidayEntry } from "@/lib/holidays";
 import { cn } from "@/lib/utils";
 
 type Event = {
@@ -26,7 +27,7 @@ type Props = {
   month: number; // 1-12 Gregorian
   primaryCalendar: "HEBREW" | "GREGORIAN";
   events: Event[];
-  holidays: Map<string, string>;
+  holidays: Map<string, HolidayEntry>;
   todayGregorian: Date;
   onDayClick: (date: Date, hebrewDate: HDate) => void;
 };
@@ -107,7 +108,8 @@ export default function CalendarGrid({
               const dayEvents = getEventsForDate(gregorianDate, hebrewDate, events);
 
               const dateKey = gregorianDate.toISOString().slice(0, 10);
-              const isHoliday = holidays.has(dateKey);
+              const holidayEntry = holidays.get(dateKey);
+              const isHoliday = !!holidayEntry?.visual;
 
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
@@ -130,25 +132,31 @@ export default function CalendarGrid({
                   key={di}
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
                   className={cn(
-                    "flex flex-col items-center justify-start pt-1 pb-1 px-0.5 rounded-lg min-h-[56px] transition-colors",
-                    isHoliday
-                      ? "bg-amber-100 dark:bg-amber-900/30"
-                      : "bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    "flex flex-col items-center rounded-lg min-h-[56px] transition-colors pt-1.5 pb-1 bg-[var(--card)] hover:bg-[var(--secondary)]",
                     isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
-                  {/* Primary date number */}
-                  <span className="text-sm font-semibold leading-tight text-[var(--foreground)]">
-                    {primaryLabel}
-                  </span>
-
-                  {/* Secondary date number */}
-                  <span className="text-[10px] leading-tight text-[var(--muted-foreground)]">
-                    {secondaryLabel}
-                    {hebrewMonthName && primaryCalendar === "GREGORIAN" && (
-                      <span className="block text-[9px] leading-none">{hebrewMonthName}</span>
-                    )}
-                  </span>
+                  {/* Date band — amber on holidays, plain otherwise */}
+                  <div className={cn(
+                    "w-full flex flex-col items-center py-0.5",
+                    isHoliday && "bg-amber-200 dark:bg-amber-800/70"
+                  )}>
+                    <span className={cn(
+                      "text-sm font-semibold leading-tight",
+                      isHoliday ? "text-amber-950 dark:text-amber-50" : "text-[var(--foreground)]"
+                    )}>
+                      {primaryLabel}
+                    </span>
+                    <span className={cn(
+                      "text-[10px] leading-tight text-center",
+                      isHoliday ? "text-amber-800 dark:text-amber-200" : "text-[var(--muted-foreground)]"
+                    )}>
+                      {secondaryLabel}
+                      {hebrewMonthName && primaryCalendar === "GREGORIAN" && (
+                        <span className="block text-[9px] leading-none">{hebrewMonthName}</span>
+                      )}
+                    </span>
+                  </div>
 
                   {/* Event dots */}
                   {dayEvents.length > 0 && (

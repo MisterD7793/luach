@@ -38,6 +38,11 @@ const FEATURES = [
     description:
       "Receive reminders outside the app — via push notification or email — in addition to the in-app notification feed.",
   },
+  {
+    title: "Themes",
+    description:
+      "Choose from a set of color themes to personalize the app's appearance.",
+  },
 ];
 
 export default function FuturePage() {

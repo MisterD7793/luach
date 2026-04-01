@@ -301,9 +301,9 @@ export default function HomePage() {
             <div className="mb-4">
               {(() => {
                 const key = selectedDate.gregorian.toISOString().slice(0, 10);
-                const holidayName = holidays.get(key);
-                return holidayName ? (
-                  <div className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1">{holidayName}</div>
+                const holidayEntry = holidays.get(key);
+                return holidayEntry ? (
+                  <div className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1">{holidayEntry.name}</div>
                 ) : null;
               })()}
               <div className="font-bold text-lg text-[var(--foreground)]">
