@@ -64,7 +64,7 @@ export default function HolidaysPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/user").then(r => r.json()).then(u => {
@@ -81,19 +81,21 @@ export default function HolidaysPage() {
 
   async function save() {
     setSaving(true);
-    setSaveError(false);
+    setSaveError(null);
     try {
       const res = await fetch("/api/user", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ holidaySettings: settings }),
       });
-      if (!res.ok) throw new Error("Failed");
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-    } catch {
-      setSaveError(true);
-      setTimeout(() => setSaveError(false), 3000);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setSaveError(msg);
+      setTimeout(() => setSaveError(null), 8000);
     } finally {
       setSaving(false);
     }
@@ -162,7 +164,7 @@ export default function HolidaysPage() {
             disabled={saving}
             className="w-full rounded-lg bg-[var(--primary)] text-white py-3 font-medium disabled:opacity-50"
           >
-            {saved ? "Saved!" : saveError ? "Error — try again" : saving ? "Saving…" : "Save"}
+            {saved ? "Saved!" : saveError ? saveError : saving ? "Saving…" : "Save"}
           </button>
         </div>
       )}

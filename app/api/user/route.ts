@@ -36,10 +36,15 @@ export async function PATCH(req: NextRequest) {
 
   const data = await req.json();
 
-  const user = await prisma.user.update({
-    where: { clerkId: userId },
-    data,
-  });
-
-  return NextResponse.json(user);
+  try {
+    const user = await prisma.user.update({
+      where: { clerkId: userId },
+      data,
+    });
+    return NextResponse.json(user);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("PATCH /api/user error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
