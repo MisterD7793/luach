@@ -25,17 +25,35 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
       </div>
       <button
         type="button"
+        role="switch"
+        aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={cn(
-          "flex-shrink-0 flex items-center h-6 w-11 rounded-full px-0.5 transition-colors duration-200",
-          checked ? "bg-[var(--primary)]" : "bg-gray-300"
-        )}
+        style={{
+          position: "relative",
+          display: "inline-block",
+          flexShrink: 0,
+          width: 44,
+          height: 24,
+          borderRadius: 12,
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+          backgroundColor: checked ? "var(--primary)" : "#d1d5db",
+          transition: "background-color 0.2s",
+        }}
       >
         <span
-          className={cn(
-            "h-5 w-5 rounded-full bg-white shadow transition-transform duration-200",
-            checked ? "translate-x-5" : "translate-x-0"
-          )}
+          style={{
+            position: "absolute",
+            top: 2,
+            left: checked ? 22 : 2,
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+            backgroundColor: "white",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
+            transition: "left 0.2s",
+          }}
         />
       </button>
     </div>
