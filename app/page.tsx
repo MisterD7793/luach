@@ -282,10 +282,11 @@ export default function HomePage() {
         </div>
         <button
           onClick={() => setShowZmanim(true)}
-          className="p-2 rounded-full min-h-[auto] min-w-[auto]"
+          className="flex flex-col items-center gap-0.5 p-2 min-h-[auto] min-w-[auto]"
           title="Zmanim"
         >
           <Clock size={18} className="text-[var(--muted-foreground)]" />
+          <span className="text-[9px] text-[var(--muted-foreground)] leading-none">Zmanim</span>
         </button>
       </div>
 

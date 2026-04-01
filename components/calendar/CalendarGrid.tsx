@@ -156,10 +156,10 @@ export default function CalendarGrid({
                       "text-[10px] leading-tight text-center",
                       isHoliday ? "text-amber-800 dark:text-amber-200" : "text-[var(--muted-foreground)]"
                     )}>
-                      {secondaryLabel}
-                      {hebrewMonthName && primaryCalendar === "GREGORIAN" && (
-                        <span className="block text-[9px] leading-none">{hebrewMonthName}</span>
-                      )}
+                      {hebrewMonthName && primaryCalendar === "GREGORIAN"
+                        ? `${secondaryLabel} ${hebrewMonthName}`
+                        : secondaryLabel
+                      }
                     </span>
                   </div>
 

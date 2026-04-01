@@ -129,32 +129,64 @@ export default function SettingsPage() {
       {loading ? (
         <div className="p-8 text-center text-[var(--muted-foreground)]">Loading…</div>
       ) : (
-        <div className="p-5 space-y-6">
+        <div className="p-5 space-y-8">
+
+          {/* Section: Calendar */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-[var(--foreground)]">
-              Time zone
-            </label>
-            <p className="text-xs text-[var(--muted-foreground)] mb-2">
-              Determines when the Hebrew date changes at sunset.
-            </p>
-            <select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
-            >
-              {COMMON_TIMEZONES.map((tz) => (
-                <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
-              ))}
-            </select>
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-4">Calendar</div>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-1 text-[var(--foreground)]">
+                  Time zone
+                </label>
+                <p className="text-xs text-[var(--muted-foreground)] mb-2">
+                  Determines when the Hebrew date changes at sunset.
+                </p>
+                <select
+                  value={timezone}
+                  onChange={(e) => setTimezone(e.target.value)}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                >
+                  {COMMON_TIMEZONES.map((tz) => (
+                    <option key={tz} value={tz}>{tz.replace(/_/g, " ")}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 text-[var(--foreground)]">
+                  Default calendar view
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {(["GREGORIAN", "HEBREW"] as const).map((cal) => (
+                    <button
+                      key={cal}
+                      type="button"
+                      onClick={() => setPrimaryCalendar(cal)}
+                      className={`rounded-lg border-2 py-3 text-sm font-medium transition-colors ${
+                        primaryCalendar === cal
+                          ? "border-[var(--primary)] bg-[var(--primary)] text-white"
+                          : "border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
+                      }`}
+                    >
+                      {cal === "GREGORIAN" ? "English (Gregorian)" : "Hebrew"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
+          {/* Section: Location */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-[var(--foreground)]">
-              Location
-            </label>
-            <p className="text-xs text-[var(--muted-foreground)] mb-2">
-              Used for precise Zmanim calculations.
-            </p>
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-4">Location</div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-[var(--foreground)]">
+                Location
+              </label>
+              <p className="text-xs text-[var(--muted-foreground)] mb-2">
+                Used for precise Zmanim calculations.
+              </p>
             {locationLabel && (
               <p className="text-xs text-[var(--foreground)] mb-3">
                 Current: <span className="font-medium">{locationLabel}</span>
@@ -196,27 +228,6 @@ export default function SettingsPage() {
             {zipError && (
               <p className="text-xs text-red-500 mt-1">{zipError}</p>
             )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2 text-[var(--foreground)]">
-              Default calendar view
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              {(["GREGORIAN", "HEBREW"] as const).map((cal) => (
-                <button
-                  key={cal}
-                  type="button"
-                  onClick={() => setPrimaryCalendar(cal)}
-                  className={`rounded-lg border-2 py-3 text-sm font-medium transition-colors ${
-                    primaryCalendar === cal
-                      ? "border-[var(--primary)] bg-[var(--primary)] text-white"
-                      : "border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
-                  }`}
-                >
-                  {cal === "GREGORIAN" ? "English (Gregorian)" : "Hebrew"}
-                </button>
-              ))}
             </div>
           </div>
 
@@ -228,17 +239,20 @@ export default function SettingsPage() {
             {saved ? "Saved!" : saving ? "Saving…" : "Save settings"}
           </button>
 
-          <div className="pt-4 border-t border-[var(--border)]">
+          {/* Section: Jewish Holidays */}
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-4">Jewish Holidays</div>
             <button
               onClick={() => router.push("/holidays")}
               className="w-full text-left rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-medium text-[var(--foreground)]"
             >
-              Jewish holidays →
+              Holiday categories and schedule →
             </button>
           </div>
 
-          <div className="pt-4 border-t border-[var(--border)]">
-            <div className="text-sm font-medium mb-3 text-[var(--foreground)]">Account</div>
+          {/* Section: Account */}
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-4">Account</div>
             <UserButton />
           </div>
 
