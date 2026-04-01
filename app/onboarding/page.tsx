@@ -39,7 +39,7 @@ export default function OnboardingPage() {
     });
 
     if (res.ok) {
-      router.push("/welcome");
+      router.push("/?welcome=1");
     } else {
       setLoading(false);
       alert("Something went wrong. Please try again.");

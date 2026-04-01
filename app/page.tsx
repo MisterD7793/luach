@@ -63,6 +63,17 @@ export default function HomePage() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showZmanim, setShowZmanim] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("welcome") === "1") {
+        setShowWelcome(true);
+        window.history.replaceState({}, "", "/");
+      }
+    }
+  }, []);
 
   const holidaySettings = user?.holidaySettings
     ? { ...DEFAULT_HOLIDAY_SETTINGS, ...user.holidaySettings }
@@ -357,6 +368,65 @@ export default function HomePage() {
               onSave={handleSaveEvent}
               onCancel={() => { setShowAddEvent(false); setSelectedDate(null); }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Welcome modal */}
+      {showWelcome && (
+        <div className="fixed inset-0 z-50 bg-[var(--background)] overflow-y-auto flex flex-col">
+          <div className="flex-1 px-8 pt-16 pb-8 max-w-lg mx-auto w-full">
+            <div className="mb-12">
+              <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">Luach</h1>
+              <p className="text-[var(--muted-foreground)] text-base">Your Jewish lifecycle calendar</p>
+            </div>
+
+            {[
+              {
+                title: "What Luach does",
+                body: ["Luach tracks the events that matter most in Jewish life — birthdays, anniversaries, and yahrzeits — and follows them across both the Hebrew and Gregorian calendars, automatically, every year."],
+              },
+              {
+                title: "How events work",
+                body: [
+                  "When you add a birthday or anniversary, Luach creates two linked events: one anchored to the Hebrew date, one to the English date. Each recurs independently on its own calendar. Each sends its own reminder. You never miss either.",
+                  "Yahrzeits are Hebrew-only — the Hebrew date is what matters. If you know the English date, enter it and Luach converts it for you, accounting for whether it was before or after sunset.",
+                ],
+              },
+              {
+                title: "Jewish holidays",
+                body: [
+                  "Luach displays Jewish holidays directly on the calendar. Major holidays, Rosh Chodesh, Chanukah, Sefirat HaOmer, and more — all customizable by category. Choose Diaspora or Israel schedule.",
+                  "Find holiday settings under Settings → Jewish holidays.",
+                ],
+              },
+              {
+                title: "Do this first",
+                body: ["Open Settings and confirm your time zone — this determines when the Hebrew date changes at sunset. If you want accurate Zmanim (halachic times), add your location there too."],
+              },
+              {
+                title: "Then do this",
+                body: ["Tap the + button to add your first event. A birthday or yahrzeit is a good place to start."],
+              },
+            ].map((s) => (
+              <div key={s.title} className="mb-10">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-3">{s.title}</h2>
+                <div className="space-y-2">
+                  {s.body.map((p, i) => (
+                    <p key={i} className="text-sm leading-relaxed text-[var(--foreground)]">{p}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="px-8 pb-12 max-w-lg mx-auto w-full">
+            <button
+              onClick={() => setShowWelcome(false)}
+              className="w-full rounded-xl bg-[var(--primary)] text-white py-4 text-base font-semibold min-h-[auto]"
+            >
+              Open my calendar
+            </button>
           </div>
         </div>
       )}
