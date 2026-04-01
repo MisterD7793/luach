@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Zmanim, GeoLocation } from "@hebcal/core";
+import { Zmanim, GeoLocation, HebrewCalendar, flags } from "@hebcal/core";
 
 type Props = {
   date: Date;
@@ -12,7 +12,14 @@ type Props = {
   onClose: () => void;
 };
 
-const ZMANIM_ROWS: {
+type ZmanimRow = {
+  label: string;
+  sub?: string;
+  time: string;
+  special?: boolean;
+};
+
+const BASE_ZMANIM: {
   label: string;
   sub?: string;
   method: (z: Zmanim) => Date | null;
@@ -27,8 +34,10 @@ const ZMANIM_ROWS: {
   { label: "Mincha Gedola", sub: "Earliest Mincha", method: (z) => z.minchaGedola() },
   { label: "Mincha Ketana", method: (z) => z.minchaKetana() },
   { label: "Plag HaMincha", method: (z) => z.plagHaMincha() },
+  // index 10 — candle lighting inserted here when relevant
   { label: "Shkiah", sub: "Sunset", method: (z) => z.sunset() },
   { label: "Tzet HaKochavim", sub: "Nightfall", method: (z) => z.tzeit() },
+  // Havdalah appended here when relevant
 ];
 
 function formatTime(date: Date | null, timezone: string): string {
@@ -56,16 +65,57 @@ export default function ZmanimSheet({ date, latitude, longitude, timezone, onClo
       .catch(() => {});
   }, [latitude, longitude]);
 
-  const rows = useMemo(() => {
+  const rows = useMemo((): ZmanimRow[] | null => {
     if (latitude == null || longitude == null) return null;
     try {
       const gloc = new GeoLocation(null, latitude, longitude, 0, timezone);
       const z = new Zmanim(gloc, date, false);
-      return ZMANIM_ROWS.map((row) => ({
+
+      const dayOfWeek = date.getDay(); // 0=Sun … 5=Fri, 6=Sat
+
+      // Check if tomorrow starts a Yom Tov (Erev Yom Tov)
+      const tomorrow = new Date(date);
+      tomorrow.setDate(date.getDate() + 1);
+      const tomorrowEvents = HebrewCalendar.calendar({ start: tomorrow, end: tomorrow, il: false });
+      const isErevYomTov = dayOfWeek !== 5 && tomorrowEvents.some(e => !!(e.getFlags() & flags.CHAG));
+
+      // Check if today is Yom Tov (Motzei Yom Tov — applies after nightfall)
+      const todayEvents = HebrewCalendar.calendar({ start: date, end: date, il: false });
+      const isYomTov = dayOfWeek !== 6 && todayEvents.some(e => !!(e.getFlags() & flags.CHAG));
+
+      const isCandleLightingDay = dayOfWeek === 5 || isErevYomTov;
+      const isHavdalahDay = dayOfWeek === 6 || isYomTov;
+
+      // Build base rows
+      const result: ZmanimRow[] = BASE_ZMANIM.map(row => ({
         label: row.label,
         sub: row.sub,
         time: formatTime(row.method(z), timezone),
       }));
+
+      // Insert candle lighting before Shkiah (index 10)
+      if (isCandleLightingDay) {
+        const sunset = z.sunset();
+        const candleTime = sunset ? new Date(sunset.getTime() - 18 * 60 * 1000) : null;
+        result.splice(10, 0, {
+          label: "Hadlakat Nerot",
+          sub: "Candle lighting · 18 min before sunset",
+          time: formatTime(candleTime, timezone),
+          special: true,
+        });
+      }
+
+      // Append Havdalah after Tzet HaKochavim
+      if (isHavdalahDay) {
+        result.push({
+          label: "Havdalah",
+          sub: "Tzet HaKochavim",
+          time: formatTime(z.tzeit(), timezone),
+          special: true,
+        });
+      }
+
+      return result;
     } catch {
       return null;
     }
@@ -111,12 +161,20 @@ export default function ZmanimSheet({ date, latitude, longitude, timezone, onClo
             {rows.map((row, i) => (
               <li key={i} className="flex items-center justify-between py-2.5">
                 <div>
-                  <div className="text-sm font-medium text-[var(--foreground)]">{row.label}</div>
+                  <div className={row.special
+                    ? "text-sm font-semibold text-[var(--primary)]"
+                    : "text-sm font-medium text-[var(--foreground)]"
+                  }>
+                    {row.label}
+                  </div>
                   {row.sub && (
                     <div className="text-xs text-[var(--muted-foreground)]">{row.sub}</div>
                   )}
                 </div>
-                <div className="text-sm font-medium text-[var(--foreground)] tabular-nums">
+                <div className={row.special
+                  ? "text-sm font-semibold text-[var(--primary)] tabular-nums"
+                  : "text-sm font-medium text-[var(--foreground)] tabular-nums"
+                }>
                   {row.time}
                 </div>
               </li>

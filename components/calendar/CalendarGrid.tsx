@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { HDate } from "@hebcal/core";
+import { Flame } from "lucide-react";
 import {
   getCalendarWeeks,
   HEBREW_MONTH_NAMES,
@@ -112,6 +113,16 @@ export default function CalendarGrid({
               const isHoliday = !!holidayEntry?.visual;
               const isOmerLine = !!holidayEntry?.line;
 
+              // Candle lighting: Fridays and Erev Yom Tov (day before a visual holiday, not Saturday)
+              const dow = gregorianDate.getDay();
+              const isFriday = dow === 5;
+              const isSaturday = dow === 6;
+              const tomorrowDate = new Date(gregorianDate);
+              tomorrowDate.setDate(gregorianDate.getDate() + 1);
+              const tomorrowKey = tomorrowDate.toISOString().slice(0, 10);
+              const isErevYomTov = !isSaturday && !!holidays.get(tomorrowKey)?.visual;
+              const showCandle = isFriday || isErevYomTov;
+
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
                   ? gregorianDate.getDate().toString()
@@ -134,10 +145,17 @@ export default function CalendarGrid({
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
                   style={{ minHeight: 72 }}
                   className={cn(
-                    "flex flex-col items-center rounded-lg transition-colors pt-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    "relative flex flex-col items-center rounded-lg transition-colors pt-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
                     isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
+                  {showCandle && (
+                    <Flame
+                      size={10}
+                      className="absolute top-1 right-1 text-amber-500"
+                      aria-hidden
+                    />
+                  )}
                   {/* Date band — amber on holidays, plain otherwise */}
                   <div className={cn(
                     "w-full flex flex-col items-center py-0.5 relative",
