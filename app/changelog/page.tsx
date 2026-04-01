@@ -6,8 +6,8 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
-    version: "0.4.2",
-    name: "First Impressions",
+    version: "0.4.3",
+    name: "Candle Lighting",
     date: "April 1, 2026",
     changes: [
       "Welcome screen shown to new users after registration — explains how Luach works, the dual-calendar event model, and what to do first",
