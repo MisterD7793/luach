@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.4.1",
+    name: "Layout Fix",
+    date: "March 31, 2026",
+    changes: [
+      "Calendar grid and all page content now run full-width on mobile — removed a max-width constraint that was adding unnecessary margins on both sides of every page",
+    ],
+  },
+  {
     version: "0.4.0",
     name: "Jewish Holidays",
     date: "March 31, 2026",
