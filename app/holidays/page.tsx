@@ -16,35 +16,31 @@ type ToggleRowProps = {
 
 function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
   return (
-    <div className="flex items-center justify-between gap-4 py-3 border-b border-[var(--border)] last:border-0">
+    <label className="flex items-center justify-between gap-4 py-3 border-b border-[var(--border)] last:border-0 cursor-pointer select-none">
       <div className="flex-1">
         <div className="text-sm font-medium text-[var(--foreground)]">{label}</div>
         {description && (
           <div className="text-xs text-[var(--muted-foreground)] mt-0.5">{description}</div>
         )}
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="sr-only"
+      />
+      <div
         style={{
           position: "relative",
-          display: "inline-block",
           flexShrink: 0,
           width: 44,
           height: 24,
-          minHeight: 0,
-          minWidth: 0,
           borderRadius: 12,
-          border: "none",
-          padding: 0,
-          cursor: "pointer",
           backgroundColor: checked ? "var(--primary)" : "#d1d5db",
           transition: "background-color 0.2s",
         }}
       >
-        <span
+        <div
           style={{
             position: "absolute",
             top: 2,
@@ -57,8 +53,8 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
             transition: "left 0.2s",
           }}
         />
-      </button>
-    </div>
+      </div>
+    </label>
   );
 }
 
@@ -68,6 +64,7 @@ export default function HolidaysPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   useEffect(() => {
     fetch("/api/user").then(r => r.json()).then(u => {
@@ -84,14 +81,22 @@ export default function HolidaysPage() {
 
   async function save() {
     setSaving(true);
-    await fetch("/api/user", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ holidaySettings: settings }),
-    });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setSaveError(false);
+    try {
+      const res = await fetch("/api/user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ holidaySettings: settings }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setSaveError(true);
+      setTimeout(() => setSaveError(false), 3000);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -157,7 +162,7 @@ export default function HolidaysPage() {
             disabled={saving}
             className="w-full rounded-lg bg-[var(--primary)] text-white py-3 font-medium disabled:opacity-50"
           >
-            {saved ? "Saved!" : saving ? "Saving…" : "Save"}
+            {saved ? "Saved!" : saveError ? "Error — try again" : saving ? "Saving…" : "Save"}
           </button>
         </div>
       )}
