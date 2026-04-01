@@ -6,6 +6,15 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.4.2",
+    name: "First Impressions",
+    date: "April 1, 2026",
+    changes: [
+      "Welcome screen shown to new users after registration — explains how Luach works, the dual-calendar event model, and what to do first",
+      "Sign-in page now explains why an account is required before showing the login form",
+    ],
+  },
+  {
     version: "0.4.1",
     name: "Layout Fix",
     date: "March 31, 2026",
