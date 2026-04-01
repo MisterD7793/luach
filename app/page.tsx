@@ -246,7 +246,7 @@ export default function HomePage() {
       </div>
 
       {/* Calendar */}
-      <div className="px-3 pb-4">
+      <div className="pb-4">
         <CalendarGrid
           year={viewYear}
           month={viewMonth}
