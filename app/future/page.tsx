@@ -15,19 +15,9 @@ const FEATURES = [
       "Tap the year in the month header to jump directly to any year — no more arrow-tapping through months to reach a date in the distant past.",
   },
   {
-    title: "Jewish holidays",
-    description:
-      "Display a standard set of Jewish holidays on the calendar, opt-in by category: Major Holidays, Minor Holidays, Rosh Chodesh, Minor Fasts, Special Shabbatot, Modern Holidays (Yom HaShoah, Yom HaAtzmaut, etc.), Days of the Omer, Yizkor, and Weekly Torah portion. Choose Diaspora or Israel holiday schedule.",
-  },
-  {
     title: "Hebrew interface",
     description:
       "When Hebrew is your primary calendar, the app switches to Hebrew language and right-to-left layout throughout. The calendar toggle becomes a compact EN | HE switch.",
-  },
-  {
-    title: "Daily Zmanim",
-    description:
-      "One tap to see the halachic times for any day — Alot HaShachar, Sunrise, Sof Zman Kriat Shema, Mincha, Shkiah, Tzet HaKochavim, and more. Times are calculated for your location.",
   },
   {
     title: "Event editing and deletion",
