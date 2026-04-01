@@ -34,6 +34,8 @@ function ToggleRow({ label, description, checked, onChange }: ToggleRowProps) {
           flexShrink: 0,
           width: 44,
           height: 24,
+          minHeight: 0,
+          minWidth: 0,
           borderRadius: 12,
           border: "none",
           padding: 0,
