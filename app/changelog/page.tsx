@@ -10,6 +10,15 @@ const VERSIONS = [
     name: "Candle Lighting",
     date: "April 1, 2026",
     changes: [
+      "Small amber dot on calendar cells marks Fridays and Erev Yom Tov — a quick visual cue for candle lighting days",
+      "Zmanim sheet now includes Hadlakat Nerot (candle lighting, 18 min before sunset) on Fridays and Erev Yom Tov, and Havdalah on Motzei Shabbat and Motzei Yom Tov",
+    ],
+  },
+  {
+    version: "0.4.2",
+    name: "First Impressions",
+    date: "April 1, 2026",
+    changes: [
       "Welcome screen shown to new users after registration — explains how Luach works, the dual-calendar event model, and what to do first",
       "Sign-in page now explains why an account is required before showing the login form",
     ],

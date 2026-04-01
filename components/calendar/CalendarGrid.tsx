@@ -113,16 +113,15 @@ export default function CalendarGrid({
               const isHoliday = !!holidayEntry?.visual;
               const isOmerLine = !!holidayEntry?.line;
 
-              // Candle lighting: Fridays and Erev Yom Tov (day before a visual holiday, not Saturday)
+              // Candle lighting: Fridays and Erev Yom Tov (day before a halachic CHAG, not Saturday)
               const dow = gregorianDate.getDay();
               const isFriday = dow === 5;
               const isSaturday = dow === 6;
               const tomorrowDate = new Date(gregorianDate);
               tomorrowDate.setDate(gregorianDate.getDate() + 1);
               const tomorrowKey = tomorrowDate.toISOString().slice(0, 10);
-              const isErevYomTov = !isSaturday && !!holidays.get(tomorrowKey)?.visual;
+              const isErevYomTov = !isSaturday && !!holidays.get(tomorrowKey)?.chag;
               const showCandle = isFriday || isErevYomTov;
-              if (showCandle) console.log("showCandle true for", gregorianDate.toDateString());
 
               const primaryLabel =
                 primaryCalendar === "GREGORIAN"
@@ -157,9 +156,10 @@ export default function CalendarGrid({
                   )}>
                   {showCandle && (
                     <Flame
-                      size={10}
-                      style={{ position: "absolute", top: 2, right: 2, zIndex: 10, color: "rgb(245 158 11)" }}
-                      aria-hidden
+                      size={12}
+                      fill="rgb(245 158 11)"
+                      strokeWidth={0}
+                      style={{ position: "absolute", top: 2, right: 2, zIndex: 10 }}
                     />
                   )}
                     {isOmerLine && (

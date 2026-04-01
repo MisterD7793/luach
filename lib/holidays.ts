@@ -39,6 +39,8 @@ export type HolidayEntry = {
   visual: boolean;
   /** Whether to show a 2px contrasting line at the bottom of the band (Omer) */
   line: boolean;
+  /** Whether this is a halachic Yom Tov (CHAG) — used to determine Erev Yom Tov candle lighting */
+  chag: boolean;
 };
 
 /**
@@ -103,9 +105,10 @@ export function getHolidaysForMonth(
     const key = greg.toISOString().slice(0, 10);
     // Only store the first (most significant) holiday per day;
     // but if the existing entry has no line and this one does, merge the line flag
+    const chag = !!(f & flags.CHAG);
     const existing = result.get(key);
     if (!existing) {
-      result.set(key, { name: ev.render("en"), visual, line });
+      result.set(key, { name: ev.render("en"), visual, line, chag });
     } else if (line && !existing.line) {
       result.set(key, { ...existing, line: true });
     }
