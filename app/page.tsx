@@ -183,7 +183,7 @@ export default function HomePage() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="min-h-screen bg-[var(--background)] flex flex-col max-w-lg mx-auto">
+    <div className="min-h-screen bg-[var(--background)] flex flex-col w-full">
       {/* Top bar */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--card)]">
         <button

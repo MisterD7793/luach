@@ -118,7 +118,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] max-w-lg mx-auto">
+    <div className="min-h-screen bg-[var(--background)] w-full">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)] bg-[var(--card)]">
         <button onClick={() => router.back()} className="p-1 min-h-[auto] min-w-[auto]">
           <ChevronLeft size={20} className="text-[var(--foreground)]" />
