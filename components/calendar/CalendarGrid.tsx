@@ -145,22 +145,22 @@ export default function CalendarGrid({
                   onClick={() => onDayClick(gregorianDate, hebrewDate)}
                   style={{ minHeight: 72 }}
                   className={cn(
-                    "relative flex flex-col items-center rounded-lg transition-colors pt-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
+                    "flex flex-col items-center rounded-lg transition-colors pt-2 bg-[var(--card)] hover:bg-[var(--secondary)]",
                     isToday && "ring-2 ring-[var(--primary)] ring-inset"
                   )}
                 >
-                  {showCandle && (
-                    <Flame
-                      size={10}
-                      className="absolute top-1 right-1 text-amber-500"
-                      aria-hidden
-                    />
-                  )}
                   {/* Date band — amber on holidays, plain otherwise */}
                   <div className={cn(
                     "w-full flex flex-col items-center py-0.5 relative",
                     isHoliday && "bg-amber-200 dark:bg-amber-800/70"
                   )}>
+                  {showCandle && (
+                    <Flame
+                      size={10}
+                      className="absolute top-0.5 right-0.5 text-amber-500 z-10"
+                      aria-hidden
+                    />
+                  )}
                     {isOmerLine && (
                       <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, backgroundColor: "rgb(217 119 6)" /* amber-600 */ }} />
                     )}
