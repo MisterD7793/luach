@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.5.0",
+    name: "Go to Date",
+    date: "April 4, 2026",
+    changes: [
+      "Tap the month/year header to jump directly to any month — choose a month and year from a picker sheet instead of paging through arrows. Works in both Gregorian and Hebrew calendar modes.",
+    ],
+  },
+  {
     version: "0.4.4",
     name: "Zmanim for Any Day",
     date: "April 4, 2026",
