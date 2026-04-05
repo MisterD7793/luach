@@ -6,6 +6,15 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.4.4",
+    name: "Zmanim for Any Day",
+    date: "April 4, 2026",
+    changes: [
+      "Tap any day on the calendar to open the day detail sheet, then tap the clock icon to see Zmanim for that specific date — not just today",
+      "Fixed a build reliability issue where the Prisma client was not being regenerated on every Vercel deployment, causing intermittent build failures. Thanks to Gedaliah Dimbert for the bug report.",
+    ],
+  },
+  {
     version: "0.4.3",
     name: "Candle Lighting",
     date: "April 1, 2026",
