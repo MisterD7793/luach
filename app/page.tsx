@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { HDate, months } from "@hebcal/core";
 import { ChevronLeft, ChevronRight, Plus, Bell, Settings, Clock } from "lucide-react";
@@ -49,8 +50,19 @@ type Notification = {
   read: boolean;
 };
 
+const GUEST_USER: UserProfile = {
+  id: "guest",
+  timezone: "Asia/Jerusalem",
+  primaryCalendar: "GREGORIAN",
+  latitude: 31.7683,
+  longitude: 35.2137,
+  holidaySettings: null,
+};
+
 export default function HomePage() {
   const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
+  const [isGuest, setIsGuest] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -121,9 +133,23 @@ export default function HomePage() {
   }, [router]);
 
   useEffect(() => {
-    loadData();
-    fetch("/api/notifications", { method: "POST" });
-  }, [loadData]);
+    if (!isLoaded) return;
+    if (isSignedIn) {
+      localStorage.removeItem("luach_guest");
+      loadData();
+      fetch("/api/notifications", { method: "POST" });
+    } else {
+      const guestFlag = localStorage.getItem("luach_guest");
+      if (guestFlag === "true") {
+        setIsGuest(true);
+        setUser(GUEST_USER);
+        setPrimaryCalendar("GREGORIAN");
+        setLoading(false);
+      } else {
+        router.push("/welcome");
+      }
+    }
+  }, [isLoaded, isSignedIn, loadData, router]);
 
   function prevMonth() {
     if (viewMonth === 1) { setViewMonth(12); setViewYear(y => y - 1); }
@@ -237,6 +263,21 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Guest banner */}
+      {isGuest && (
+        <div className="w-full bg-[var(--secondary)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-between gap-3">
+          <p className="text-xs text-[var(--muted-foreground)]">
+            You're using Luach as a guest. Events and settings are not saved.
+          </p>
+          <button
+            onClick={() => router.push("/sign-in")}
+            className="text-xs font-semibold text-[var(--primary)] shrink-0 min-h-[auto] min-w-[auto]"
+          >
+            Sign in →
+          </button>
+        </div>
+      )}
+
       {/* Month navigation */}
       <div className="flex items-center justify-between px-4 py-2">
         <button onClick={prevMonth} className="p-2 rounded-full min-h-[auto] min-w-[auto]">
@@ -311,12 +352,14 @@ export default function HomePage() {
       <Footer />
 
       {/* FAB */}
-      <button
-        onClick={() => setShowAddEvent(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-lg flex items-center justify-center min-h-[auto] min-w-[auto]"
-      >
-        <Plus size={24} />
-      </button>
+      {!isGuest && (
+        <button
+          onClick={() => setShowAddEvent(true)}
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-lg flex items-center justify-center min-h-[auto] min-w-[auto]"
+        >
+          <Plus size={24} />
+        </button>
+      )}
 
       {/* Day detail sheet */}
       {selectedDate && (

@@ -80,12 +80,21 @@ export default function WelcomePage() {
       </div>
 
       {/* CTA */}
-      <div className="px-8 pb-12 max-w-lg mx-auto w-full">
+      <div className="px-8 pb-12 max-w-lg mx-auto w-full space-y-3">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/sign-in")}
           className="w-full rounded-xl bg-[var(--primary)] text-white py-4 text-base font-semibold"
         >
-          Open my calendar
+          Create an account
+        </button>
+        <button
+          onClick={() => {
+            localStorage.setItem("luach_guest", "true");
+            router.push("/");
+          }}
+          className="w-full rounded-xl border border-[var(--border)] text-[var(--foreground)] py-4 text-base font-medium"
+        >
+          Continue as guest
         </button>
       </div>
     </div>
