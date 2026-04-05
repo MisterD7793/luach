@@ -6,6 +6,28 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.6.1",
+    name: "Guest Mode Polish",
+    date: "April 5, 2026",
+    changes: [
+      "Guest banner now clarifies that your location is set to Jerusalem and that events and settings are not saved",
+      "Welcome page added to the footer alongside About, Coming Soon, and Version History",
+      "About, Coming Soon, Version History, and Welcome pages are now publicly accessible without signing in",
+    ],
+  },
+  {
+    version: "0.6.0",
+    name: "Guest Mode",
+    date: "April 5, 2026",
+    changes: [
+      "Luach now has a guest mode — no account required to explore the app",
+      "New visitors see the welcome screen first, with options to create an account or continue as a guest",
+      "Guest mode loads the full calendar with holidays, Zmanim, and navigation, defaulting to Jerusalem",
+      "A banner on the guest calendar explains the limitations and links to sign in",
+      "Guest choice is remembered across visits — no need to choose again on return",
+    ],
+  },
+  {
     version: "0.5.0",
     name: "Go to Date",
     date: "April 4, 2026",
