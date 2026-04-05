@@ -265,8 +265,8 @@ export default function HomePage() {
 
       {/* Guest banner */}
       {isGuest && (
-        <div className="w-full bg-[var(--secondary)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-between gap-3">
-          <p className="text-xs text-[var(--muted-foreground)]">
+        <div className="w-full bg-amber-100 dark:bg-amber-900/50 border-b border-amber-200 dark:border-amber-700 px-4 py-2 flex items-center justify-between gap-3">
+          <p className="text-xs text-amber-900 dark:text-amber-100">
             You're using Luach as a guest. Your location is set to Jerusalem, and events and settings are not saved.
           </p>
           <button

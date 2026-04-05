@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.6.2",
+    name: "Guest Banner",
+    date: "April 5, 2026",
+    changes: [
+      "Guest mode banner now has a yellow background for better visibility",
+    ],
+  },
+  {
     version: "0.6.1",
     name: "Guest Mode Polish",
     date: "April 5, 2026",
