@@ -63,6 +63,7 @@ export default function HomePage() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showZmanim, setShowZmanim] = useState(false);
+  const [zmanimDate, setZmanimDate] = useState<Date>(today);
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
@@ -281,7 +282,7 @@ export default function HomePage() {
           </div>
         </div>
         <button
-          onClick={() => setShowZmanim(true)}
+          onClick={() => { setZmanimDate(today); setShowZmanim(true); }}
           className="flex flex-col items-center gap-0.5 p-2 min-h-[auto] min-w-[auto]"
           title="Zmanim"
         >
@@ -310,7 +311,8 @@ export default function HomePage() {
             className="w-full max-w-lg mx-auto bg-[var(--card)] rounded-t-2xl p-5 pb-8"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-4">
+            <div className="mb-4 flex items-start justify-between gap-2">
+              <div>
               {(() => {
                 const key = selectedDate.gregorian.toISOString().slice(0, 10);
                 const holidayEntry = holidays.get(key);
@@ -324,6 +326,14 @@ export default function HomePage() {
               <div className="text-sm text-[var(--muted-foreground)]">
                 {formatHebrewDate(selectedDate.hebrew, true)}
               </div>
+              </div>
+              <button
+                onClick={() => { setZmanimDate(selectedDate.gregorian); setShowZmanim(true); }}
+                className="flex flex-col items-center gap-0.5 p-1 min-h-[auto] min-w-[auto] shrink-0 mt-1"
+              >
+                <Clock size={18} className="text-[var(--muted-foreground)]" />
+                <span className="text-[9px] text-[var(--muted-foreground)] leading-none">Zmanim</span>
+              </button>
             </div>
 
             {selectedDayEvents.length === 0 ? (
@@ -435,7 +445,7 @@ export default function HomePage() {
       {/* Zmanim sheet */}
       {showZmanim && (
         <ZmanimSheet
-          date={today}
+          date={zmanimDate}
           latitude={user?.latitude}
           longitude={user?.longitude}
           timezone={user?.timezone ?? "America/New_York"}
