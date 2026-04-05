@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.6.3",
+    name: "Guest Banner Link",
+    date: "April 5, 2026",
+    changes: [
+      "Guest banner now includes a \"What is Luach?\" link to the welcome page",
+    ],
+  },
+  {
     version: "0.6.2",
     name: "Guest Banner",
     date: "April 5, 2026",
