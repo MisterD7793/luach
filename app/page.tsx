@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { HDate } from "@hebcal/core";
+import { HDate, months } from "@hebcal/core";
 import { ChevronLeft, ChevronRight, Plus, Bell, Settings, Clock } from "lucide-react";
 import CalendarGrid from "@/components/calendar/CalendarGrid";
 import EventForm, { type EventPayload } from "@/components/events/EventForm";
@@ -13,6 +13,7 @@ import {
   formatGregorianDate,
   getTodayHebrew,
   GREGORIAN_MONTH_NAMES,
+  HEBREW_MONTH_NAMES,
 } from "@/lib/hebrew-calendar";
 import {
   getHolidaysForMonth,
@@ -64,6 +65,9 @@ export default function HomePage() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showZmanim, setShowZmanim] = useState(false);
   const [zmanimDate, setZmanimDate] = useState<Date>(today);
+  const [showGoToDate, setShowGoToDate] = useState(false);
+  const [pickerMonth, setPickerMonth] = useState(today.getMonth() + 1);
+  const [pickerYear, setPickerYear] = useState(today.getFullYear());
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
@@ -238,7 +242,20 @@ export default function HomePage() {
         <button onClick={prevMonth} className="p-2 rounded-full min-h-[auto] min-w-[auto]">
           <ChevronLeft size={20} className="text-[var(--foreground)]" />
         </button>
-        <div className="text-center">
+        <button
+          className="text-center min-h-[auto] min-w-[auto]"
+          onClick={() => {
+            if (primaryCalendar === "GREGORIAN") {
+              setPickerMonth(viewMonth);
+              setPickerYear(viewYear);
+            } else {
+              const h = new HDate(new Date(viewYear, viewMonth - 1, 15));
+              setPickerMonth(h.getMonth());
+              setPickerYear(h.getFullYear());
+            }
+            setShowGoToDate(true);
+          }}
+        >
           <div className="font-semibold text-[var(--foreground)]">
             {primaryCalendar === "GREGORIAN"
               ? `${GREGORIAN_MONTH_NAMES[viewMonth - 1]} ${viewYear}`
@@ -251,7 +268,7 @@ export default function HomePage() {
               : `${GREGORIAN_MONTH_NAMES[viewMonth - 1]} ${viewYear}`
             }
           </div>
-        </div>
+        </button>
         <button onClick={nextMonth} className="p-2 rounded-full min-h-[auto] min-w-[auto]">
           <ChevronRight size={20} className="text-[var(--foreground)]" />
         </button>
@@ -452,6 +469,66 @@ export default function HomePage() {
           onClose={() => setShowZmanim(false)}
         />
       )}
+
+      {/* Go to date sheet */}
+      {showGoToDate && (() => {
+        const selectClass = "rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-2 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]";
+        const isGregorian = primaryCalendar === "GREGORIAN";
+        const gregYears = Array.from({ length: 200 }, (_, i) => 2100 - i);
+        const hebYears = Array.from({ length: 200 }, (_, i) => 5900 - i);
+        const isLeap = !isGregorian && HDate.isLeapYear(pickerYear);
+        const hebMonthOptions = Object.entries(HEBREW_MONTH_NAMES)
+          .map(([num, name]) => ({ value: Number(num), label: name }))
+          .filter(({ value }) => isLeap || value !== months.ADAR_I);
+
+        function go() {
+          if (isGregorian) {
+            setViewMonth(pickerMonth);
+            setViewYear(pickerYear);
+          } else {
+            const greg = new HDate(1, pickerMonth, pickerYear).greg();
+            setViewMonth(greg.getMonth() + 1);
+            setViewYear(greg.getFullYear());
+          }
+          setShowGoToDate(false);
+        }
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setShowGoToDate(false)}>
+            <div className="w-full max-w-lg mx-auto bg-[var(--card)] rounded-t-2xl p-5 pb-8" onClick={(e) => e.stopPropagation()}>
+              <h2 className="text-lg font-bold mb-4 text-[var(--foreground)]">Go to date</h2>
+              <div className="flex gap-2 mb-6">
+                <select
+                  value={pickerMonth}
+                  onChange={(e) => setPickerMonth(Number(e.target.value))}
+                  className={`${selectClass} flex-1`}
+                >
+                  {isGregorian
+                    ? GREGORIAN_MONTH_NAMES.map((name, i) => (
+                        <option key={i + 1} value={i + 1}>{name}</option>
+                      ))
+                    : hebMonthOptions.map(({ value, label }) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))
+                  }
+                </select>
+                <select
+                  value={pickerYear}
+                  onChange={(e) => setPickerYear(Number(e.target.value))}
+                  className={`${selectClass} w-24`}
+                >
+                  {(isGregorian ? gregYears : hebYears).map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
+                </select>
+              </div>
+              <button onClick={go} className="w-full rounded-lg bg-[var(--primary)] text-white py-3 font-medium min-h-[auto]">
+                Go
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Notifications sheet */}
       {showNotifications && (
