@@ -267,7 +267,7 @@ export default function HomePage() {
       {isGuest && (
         <div className="w-full bg-[var(--secondary)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-between gap-3">
           <p className="text-xs text-[var(--muted-foreground)]">
-            You're using Luach as a guest. Events and settings are not saved.
+            You're using Luach as a guest. Your location is set to Jerusalem, and events and settings are not saved.
           </p>
           <button
             onClick={() => router.push("/sign-in")}

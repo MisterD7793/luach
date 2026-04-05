@@ -8,6 +8,7 @@ export default function Footer() {
   return (
     <footer className="flex justify-center gap-5 px-4 py-5 border-t border-[var(--border)] mt-auto">
       {[
+        { label: "Welcome", path: "/welcome" },
         { label: "About", path: "/about" },
         { label: "Coming soon", path: "/future" },
         { label: "Version history", path: "/changelog" },
