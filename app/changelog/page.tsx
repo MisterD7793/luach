@@ -6,6 +6,14 @@ import Footer from "@/components/Footer";
 
 const VERSIONS = [
   {
+    version: "0.6.4",
+    name: "Database Keep-Alive",
+    date: "July 3, 2026",
+    changes: [
+      "Added a daily automated health check that keeps the database awake, fixing an issue where the app could become unresponsive after periods of inactivity",
+    ],
+  },
+  {
     version: "0.6.3",
     name: "Guest Banner Link",
     date: "April 5, 2026",
